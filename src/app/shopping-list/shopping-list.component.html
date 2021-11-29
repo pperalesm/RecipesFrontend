@@ -1,6 +1,8 @@
 <div class="row">
   <div class="col-xs-10">
-    <app-shopping-edit></app-shopping-edit>
+    <app-shopping-edit
+      (addClick)="onIngredientAdded($event)"
+    ></app-shopping-edit>
     <hr />
     <div class="list-group">
       <a
