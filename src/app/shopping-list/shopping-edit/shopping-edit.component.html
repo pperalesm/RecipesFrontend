@@ -16,8 +16,20 @@
           <button class="btn btn-success" type="submit" (click)="onAddClick()">
             Add
           </button>
-          <button class="btn btn-danger" type="button">Delete</button>
-          <button class="btn btn-primary" type="button">Clear</button>
+          <button
+            class="btn btn-danger"
+            type="button"
+            (click)="onDeleteClick()"
+          >
+            Delete
+          </button>
+          <button
+            class="btn btn-primary"
+            type="button"
+            (click)="onClearClick()"
+          >
+            Clear
+          </button>
         </div>
       </div>
     </form>
