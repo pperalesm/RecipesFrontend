@@ -1,5 +1,4 @@
-<app-header (routeChange)="onRouteChange($event)"></app-header>
+<app-header></app-header>
 <div class="container">
-  <app-recipes *ngIf="route === '/recipes'"></app-recipes>
-  <app-shopping-list *ngIf="route === '/shopping-list'"></app-shopping-list>
+  <router-outlet></router-outlet>
 </div>
