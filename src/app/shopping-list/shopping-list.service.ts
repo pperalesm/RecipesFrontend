@@ -13,6 +13,7 @@ export class ShoppingListService {
   ];
 
   ingredientsUpdate: Subject<Ingredient[]> = new Subject();
+  startedEditing: Subject<number> = new Subject();
 
   constructor() {}
 
@@ -20,8 +21,17 @@ export class ShoppingListService {
     return this.ingredients.slice();
   }
 
+  getIngredient(index: number): Ingredient {
+    return this.ingredients[index];
+  }
+
   addIngredient(ingredient: Ingredient) {
     this.ingredients.push(ingredient);
+    this.ingredientsUpdate.next(this.getIngredients());
+  }
+
+  updateIngredient(index: number, ingredient: Ingredient) {
+    this.ingredients[index] = ingredient;
     this.ingredientsUpdate.next(this.getIngredients());
   }
 
@@ -30,15 +40,10 @@ export class ShoppingListService {
     this.ingredientsUpdate.next(this.getIngredients());
   }
 
-  deleteIngredient(ingredientToDelete: Ingredient) {
-    this.ingredients = this.ingredients.filter(
-      (ingredient) => !ingredient.equals(ingredientToDelete)
-    );
+  deleteIngredient(index: number) {
+    this.ingredients.splice(index, 1);
     this.ingredientsUpdate.next(this.getIngredients());
   }
 
-  clearIngredients() {
-    this.ingredients = [];
-    this.ingredientsUpdate.next(this.getIngredients());
-  }
+  onItemClick(i: number) {}
 }

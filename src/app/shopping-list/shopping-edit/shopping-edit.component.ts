@@ -1,4 +1,6 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 import { Ingredient } from '../../shared/ingredient.model';
 import { ShoppingListService } from '../shopping-list.service';
@@ -8,33 +10,52 @@ import { ShoppingListService } from '../shopping-list.service';
   templateUrl: './shopping-edit.component.html',
   styleUrls: ['./shopping-edit.component.css'],
 })
-export class ShoppingEditComponent implements OnInit {
-  @ViewChild('nameInput') nameInputRef: ElementRef;
-  @ViewChild('amountInput') amountInputRef: ElementRef;
+export class ShoppingEditComponent implements OnInit, OnDestroy {
+  @ViewChild('f', { static: false }) form: NgForm;
+  editSubscription: Subscription;
+  editMode: boolean = false;
+  editedIngredientIndex: number;
 
   constructor(private shoppingListService: ShoppingListService) {}
 
-  ngOnInit(): void {}
-
-  onAddClick() {
-    this.shoppingListService.addIngredient(
-      new Ingredient(
-        this.nameInputRef.nativeElement.value,
-        this.amountInputRef.nativeElement.value
-      )
+  ngOnInit(): void {
+    this.editSubscription = this.shoppingListService.startedEditing.subscribe(
+      (index: number) => {
+        this.editMode = true;
+        this.editedIngredientIndex = index;
+        this.form.setValue({
+          name: this.shoppingListService.getIngredient(index).name,
+          amount: this.shoppingListService.getIngredient(index).amount,
+        });
+      }
     );
+  }
+
+  ngOnDestroy(): void {
+    this.editSubscription.unsubscribe();
+  }
+
+  onSubmit() {
+    if (this.editMode) {
+      this.shoppingListService.updateIngredient(
+        this.editedIngredientIndex,
+        new Ingredient(this.form.value.name, this.form.value.amount)
+      );
+    } else {
+      this.shoppingListService.addIngredient(
+        new Ingredient(this.form.value.name, this.form.value.amount)
+      );
+    }
+    this.clear();
   }
 
   onDeleteClick() {
-    this.shoppingListService.deleteIngredient(
-      new Ingredient(
-        this.nameInputRef.nativeElement.value,
-        this.amountInputRef.nativeElement.value
-      )
-    );
+    this.shoppingListService.deleteIngredient(this.editedIngredientIndex);
+    this.clear();
   }
 
-  onClearClick() {
-    this.shoppingListService.clearIngredients();
+  clear() {
+    this.editMode = false;
+    this.form.reset();
   }
 }
