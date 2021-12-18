@@ -8,7 +8,7 @@ import { Recipe } from './recipe.model';
   providedIn: 'root',
 })
 export class RecipeService {
-  private recipes: Recipe[] = [
+  /* private recipes: Recipe[] = [
     new Recipe(
       'Cookie',
       'Homemade chocolate chip cookie',
@@ -24,7 +24,9 @@ export class RecipeService {
         new Ingredient('4th ingredient', 2945),
       ]
     ),
-  ];
+  ]; */
+
+  private recipes: Recipe[] = [];
 
   recipesUpdate: Subject<Recipe[]> = new Subject();
 
@@ -32,6 +34,11 @@ export class RecipeService {
 
   getRecipes() {
     return this.recipes.slice();
+  }
+
+  setRecipes(recipes: Recipe[]) {
+    this.recipes = recipes;
+    this.recipesUpdate.next(this.getRecipes());
   }
 
   getRecipe(id: number): Recipe {
